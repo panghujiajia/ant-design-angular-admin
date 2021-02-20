@@ -1,0 +1,54 @@
+<div>
+	<nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+		<div nz-row>
+			<div nz-col nzSpan="6">
+				<label nz-checkbox nzValue="root" [ngModel]="true"
+					>root（增删改查）</label
+				>
+			</div>
+			<div nz-col nzSpan="6">
+				<label nz-checkbox nzValue="admin">admin（增改查）</label>
+			</div>
+			<div nz-col nzSpan="6">
+				<label nz-checkbox nzValue="user">user（改查）</label>
+			</div>
+			<div nz-col nzSpan="6">
+				<label nz-checkbox nzValue="guest">guest（查）</label>
+			</div>
+		</div>
+	</nz-checkbox-wrapper>
+	<div class="button-wrap">
+		<button
+			[appAclRole]="role"
+			appAclName="addUser"
+			nz-button
+			nzType="primary"
+		>
+			添加
+		</button>
+		<button
+			[appAclRole]="role"
+			appAclName="changeUser"
+			nz-button
+			nzType="primary"
+		>
+			修改
+		</button>
+		<button
+			[appAclRole]="role"
+			appAclName="deleteUser"
+			nz-button
+			nzType="primary"
+		>
+			删除
+		</button>
+		<button
+			[appAclRole]="role"
+			appAclName="findUser"
+			nz-button
+			nzType="primary"
+		>
+			查询
+		</button>
+	</div>
+</div>

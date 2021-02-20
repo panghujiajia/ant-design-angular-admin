@@ -1,0 +1,55 @@
+<div id="login-wrap">
+	<div class="logoWrap">
+		<img src="./assets/loginLogo.png" alt="logo" />
+	</div>
+	<form
+		nz-form
+		[formGroup]="validateForm"
+		class="login-form"
+		(ngSubmit)="submitForm()"
+	>
+		<nz-form-item>
+			<nz-form-control nzErrorTip="请输入用户名">
+				<nz-input-group nzPrefixIcon="user">
+					<input
+						type="text"
+						nz-input
+						formControlName="userNum"
+						placeholder="请输入用户名"
+					/>
+				</nz-input-group>
+			</nz-form-control>
+		</nz-form-item>
+		<nz-form-item>
+			<nz-form-control nzErrorTip="请输入密码">
+				<nz-input-group nzPrefixIcon="lock">
+					<input
+						type="password"
+						nz-input
+						formControlName="password"
+						placeholder="请输入密码"
+					/>
+				</nz-input-group>
+			</nz-form-control>
+		</nz-form-item>
+		<nz-form-item>
+			<nz-form-control>
+				<label nz-checkbox formControlName="remember">
+					<span appAppUnless="condition">记住账户</span>
+				</label>
+				<a class="login-form-forgot">忘记密码</a>
+				<button
+					nz-button
+					class="login-form-button"
+					[nzType]="'primary'"
+				>
+					登 录
+				</button>
+			</nz-form-control>
+		</nz-form-item>
+	</form>
+	<div class="loginBottom">
+		<p>扫呗营销中台</p>
+		<p>Copyright 2020-2021 扫呗研发中心出品</p>
+	</div>
+</div>

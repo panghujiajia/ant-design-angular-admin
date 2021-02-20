@@ -1,0 +1,16 @@
+<div class="app-layout">
+	<app-aside [isCollapsed]="isCollapsed"></app-aside>
+	<nz-layout>
+		<app-header
+			[isCollapsed]="isCollapsed"
+			(outer)="getCollapsed($event)"
+		></app-header>
+		<nz-content>
+			<div class="inner-content" data-scrollbar>
+				<nz-spin [nzSpinning]="isSpinning" nzTip="loading...">
+					<router-outlet></router-outlet>
+				</nz-spin>
+			</div>
+		</nz-content>
+	</nz-layout>
+</div>
