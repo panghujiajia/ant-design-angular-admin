@@ -20,9 +20,9 @@ export class CanActiveGuide implements CanLoad, CanActivate, CanActivateChild {
 		route: Route,
 		segments: UrlSegment[]
 	): boolean | Promise<boolean> | Observable<boolean> {
-		console.log(1111);
+		// console.log(1111);
 		
-		console.log(route);
+		// console.log(route);
 		return true;
 		throw new Error('Method not implemented.');
 	}

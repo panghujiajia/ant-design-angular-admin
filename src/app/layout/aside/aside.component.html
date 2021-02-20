@@ -26,7 +26,7 @@
 				*ngFor="let item of menuList"
 				nz-submenu
 				[nzTitle]="item.title"
-				[nzIcon]="item.icon"
+				[nzIcon]="item.meta.icon"
 				[nzOpen]="isOpen"
 			>
 				<ul>
