@@ -6,6 +6,7 @@ import {
 	HttpEvent,
 	HttpErrorResponse,
 	HttpResponseBase,
+	HttpResponse,
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/internal/operators';
@@ -36,77 +37,59 @@ export class CommonInterceptor implements HttpInterceptor {
 	) {}
 
 	intercept(
-		request: HttpRequest<any>,
+		req: HttpRequest<any>,
 		next: HttpHandler
 	): Observable<HttpEvent<any>> {
-		const token = '';
-		const userInfo = null;
-		if (!token || userInfo === null) {
-			this.router.navigate(['login']);
-		}
 		this.store.dispatch(ChangeIsSpinning({ isSpinning: true }));
 		let obj = {};
-		// 不需要token的接口需传needToken = false
-		// 不传needToken则get到的值为null，表示需要token
-		if (request.method === 'GET') {
-			if (request.params.get('needToken') === null) {
-				obj = {
-					headers: request.headers.set('Authorization', token),
-				};
+		// 不需要token的接口需传Auth = false
+		// 不传Auth则get到的值为null，表示需要token
+		if (!req.headers.get('Auth')) {
+			const token = this.getToken();
+			if (!token) {
+				this.message.info('用户登录信息失效，请重新登录');
+				this.router.navigate(['login']);
+				return;
 			}
-		} else {
-			if (request.body || request.body.needToken === null) {
-				obj = {
-					headers: request.headers.set('Authorization', token),
-				};
-			}
+			obj = {
+				headers: req.headers.set('Authorization', token),
+			};
 		}
-		const req = request.clone(obj);
-		return next.handle(req).pipe(
-			mergeMap((event: any) => {
-				// 正常返回，处理具体返回参数
-				if (event instanceof HttpResponseBase) {
-					return this.handleData(event); // 具体处理请求返回数据
+		const request = req.clone(obj);
+		return next.handle(request).pipe(
+			tap(
+				(event: any) => {
+					if (event instanceof HttpResponse) {
+						const body = event.body;
+						this.checkStatus(body);
+					}
+					return of(event);
+				},
+				error => {
+					this.message.error('网络错误，请稍后重试');
+					this.store.dispatch(ChangeIsSpinning({ isSpinning: false }));
+					return of(error);
 				}
-				return of(event);
-			}),
-			catchError((err: HttpErrorResponse) => this.handleData(err))
+			)
 		);
 	}
-	private checkStatus(event: HttpResponseBase) {
+	private checkStatus(event: any) {
+		this.store.dispatch(ChangeIsSpinning({ isSpinning: false }));
 		if (
 			(event.status >= 200 && event.status < 300) ||
 			event.status === 401
 		) {
 			return;
 		}
-		const errortext = errObj[event.status] || event.statusText;
-		this.message.error(`请求错误 ${event.status}: ${event.url}`, errortext);
+		const errortext = event.message || errObj[event.status];
+		this.message.error(`请求错误 ${event.status}: ${errortext}`);
 	}
-	private handleData(event: HttpResponseBase): Observable<any> {
-		this.checkStatus(event);
-		this.store.dispatch(ChangeIsSpinning({ isSpinning: false }));
-		// 业务处理：一些通用操作
-		switch (event.status) {
-			case 200:
-				break;
-			case 401: // 未登录状态码
-				this.message.error('未登录或登录已过期，请重新登录。');
-				break;
-			case 404:
-				break;
-			case 500:
-				break;
-			default:
-				if (event instanceof HttpErrorResponse) {
-					console.warn(
-						'未可知错误，大部分是由于后端不支持CORS或无效配置引起',
-						event
-					);
-					return throwError(event);
-				}
-				break;
-		}
-		return of(event);
+	// 获取token
+	private getToken() {
+		let token = '';
+		this.store.subscribe(state => {
+			token = state.common.token;
+		});
+		return token;
 	}
 }

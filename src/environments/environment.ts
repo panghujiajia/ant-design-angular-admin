@@ -4,7 +4,8 @@
 
 export const environment = {
 	production: false,
-	url: 'xxx',
+	// url: 'http://admin.dev.xab.vip/api',
+	url: '/api',
 };
 
 /*

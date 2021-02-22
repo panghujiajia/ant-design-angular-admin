@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
+import { LoginService } from 'src/app/services/login/login.service';
 import { Store } from '@ngrx/store';
-import { LayoutService } from 'src/app/services/layout/layout.services';
-import cloneDeep from 'lodash/cloneDeep';
+import { SaveToken, SaveUserInfo } from 'src/app/stores/actions/bus.action';
 
 @Component({
 	selector: 'app-login',
@@ -16,19 +16,22 @@ export class LoginComponent implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private router: Router,
-		private layoutService: LayoutService,
+		private loginService: LoginService,
 		private message: NzMessageService,
 		private store: Store<{ common: any }>
 	) {}
 	condition = false;
 	menuList: any = [];
+	isSpinning: boolean; // 页面loading
 	ngOnInit(): void {
 		this.validateForm = this.fb.group({
-			userNum: [null, [Validators.required]],
+			username: [null, [Validators.required]],
 			password: [null, [Validators.required]],
 			remember: [false],
 		});
-		this.getMenuList();
+		this.store.subscribe(state => {
+			this.isSpinning = state.common.isSpinning;
+		});
 	}
 	// 登录
 	submitForm(): void {
@@ -42,53 +45,24 @@ export class LoginComponent implements OnInit {
 		}
 		const value = this.validateForm.value;
 		const params = {
-			userNum: value.userNum,
+			username: value.username,
 			password: value.password,
 		};
-		this.getMenuList();
-		// this.router.navigate(['']);
-	}
-	hasPromission(route, roles) {
-		if (route.meta && route.meta.role) {
-			if (route.meta.role.includes('root')) {
-				return true;
+		this.loginService.login(params).subscribe(res => {
+			if (res) {
+				this.store.dispatch(SaveToken({ token: res.data.token }));
+				this.getInfo();
 			}
-			return roles.some(role => {
-				return route.meta.role.includes(role);
-			});
-		} else {
-			return false;
-		}
-	}
-	// 获取用户权限菜单
-	getAccessList() {
-		const roles = ['menu', 'menu:list', 'user'];
-		const routers = cloneDeep(this.menuList);
-		console.log(routers);
-		const newRouter = this.menuList.map(item => {
-			console.log(item);
-			if (this.hasPromission(item, roles)) {
-				if (item.children && item.children.length) {
-					item.children = this.hasPromission(item.children, roles);
-				}
-				// 如果给了模块权限，没给路由权限，则不返回
-				if (item.children && !item.children.length) {
-					return false;
-				}
-				return item;
-			}
-			return false;
-		});
-		return newRouter.filter((item: any) => {
-			return item;
 		});
 	}
-	// 获取完整菜单列表
-	getMenuList() {
-		this.layoutService.getMenuList().subscribe(res => {
-			console.log(res);
-			this.menuList = res;
-			const list = this.getAccessList();
+	// 获取用户信息及权限
+	getInfo() {
+		this.loginService.info().subscribe(res => {
+			if (res) {
+				console.log(res);
+				this.store.dispatch(SaveUserInfo({ info: res.data }));
+				this.router.navigate(['']);
+			}
 		});
 	}
 }

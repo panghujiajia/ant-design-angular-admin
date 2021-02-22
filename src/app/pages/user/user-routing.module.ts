@@ -1,22 +1,28 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { UserComponent } from "./user.component";
-import { AddUserComponent } from "./add-user/add-user.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ListComponent } from './list/list.component';
+import { DeleteComponent } from './delete/delete.component';
+import { AddComponent } from './add/add.component';
+import { EditComponent } from './edit/edit.component';
 
 const routes: Routes = [
 	{
-		path: "",
-		component: UserComponent,
+		path: 'list',
+		component: ListComponent,
 	},
 	{
-		path: "add",
-		data: {
-			authName: "add-menu",
-		},
-		component: AddUserComponent,
+		path: 'delete',
+		component: DeleteComponent,
+	},
+	{
+		path: 'edit',
+		component: EditComponent,
+	},
+	{
+		path: 'add',
+		component: AddComponent,
 	},
 ];
-
 @NgModule({
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],

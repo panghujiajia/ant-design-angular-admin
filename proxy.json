@@ -1,0 +1,7 @@
+{
+	"/api": {
+		"target": "http://admin.dev.xab.vip",
+		"secure": false,
+		"changeOrigin": true
+	}
+}

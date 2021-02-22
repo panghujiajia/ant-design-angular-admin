@@ -8,6 +8,7 @@ const routes: Routes = [
 	{
 		path: '',
 		component: LayoutComponent,
+		canActivateChild: [CanActiveGuide],
 		children: [
 			{
 				path: 'welcome',

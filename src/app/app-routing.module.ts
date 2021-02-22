@@ -1,16 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CanActiveGuide } from './layout/routeGuide/CanActiveGuide';
-import { NoAccessComponent } from './pages/403/no-access.component';
+import { NoAccessComponent } from './pages/no-access/no-access.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
 	{
 		path: '',
 		loadChildren: () =>
 			import('./layout/layout.module').then(m => m.LayoutModule),
-		canLoad: [CanActiveGuide],
-		canActivate: [CanActiveGuide],
-		canActivateChild: [CanActiveGuide],
 	},
 	{
 		path: 'login',
@@ -22,14 +19,17 @@ const routes: Routes = [
 		component: NoAccessComponent,
 	},
 	{
+		path: '404',
+		component: NotFoundComponent,
+	},
+	{
 		path: '**',
-		redirectTo: '403',
+		redirectTo: '404',
 	},
 ];
 
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
-	providers: [CanActiveGuide],
 })
 export class AppRoutingModule {}

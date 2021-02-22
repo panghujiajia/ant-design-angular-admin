@@ -1,16 +1,26 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { MenuComponent } from "./menu.component";
-import { AddMenuComponent } from "./add-menu/add-menu.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ListComponent } from './list/list.component';
+import { DeleteComponent } from './delete/delete.component';
+import { EditComponent } from './edit/edit.component';
+import { AddComponent } from './add/add.component';
 
 const routes: Routes = [
 	{
-		path: "",
-		component: MenuComponent,
+		path: 'list',
+		component: ListComponent,
 	},
 	{
-		path: "add",
-		component: AddMenuComponent,
+		path: 'delete',
+		component: DeleteComponent,
+	},
+	{
+		path: 'edit',
+		component: EditComponent,
+	},
+	{
+		path: 'add',
+		component: AddComponent,
 	},
 ];
 

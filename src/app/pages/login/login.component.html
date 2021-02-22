@@ -1,6 +1,7 @@
 <div id="login-wrap">
 	<div class="logoWrap">
-		<!-- <img src="./assets/loginLogo.png" alt="logo" /> -->
+		<img src="./assets/logo.png" alt="logo" />
+		<h1>Company name</h1>
 	</div>
 	<form
 		nz-form
@@ -14,7 +15,7 @@
 					<input
 						type="text"
 						nz-input
-						formControlName="userNum"
+						formControlName="username"
 						placeholder="请输入用户名"
 					/>
 				</nz-input-group>
@@ -42,14 +43,15 @@
 					nz-button
 					class="login-form-button"
 					[nzType]="'primary'"
+					[nzLoading]="isSpinning"
 				>
 					登 录
 				</button>
 			</nz-form-control>
 		</nz-form-item>
 	</form>
-	<!-- <div class="loginBottom">
-		<p>扫呗营销中台</p>
-		<p>Copyright 2020-2021 扫呗研发中心出品</p>
-	</div> -->
+	<div class="loginBottom">
+		<p>ant-design-angular-admin</p>
+		<p>Copyright 2020-2021 panghujiajia出品</p>
+	</div>
 </div>

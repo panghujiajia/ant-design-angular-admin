@@ -13,17 +13,17 @@
 			<div class="header-right">
 				<a class="userName" nz-dropdown [nzDropdownMenu]="menu">
 					<nz-avatar nzIcon="user"></nz-avatar>
-					<span>{{ userName || "张三" }}，你好</span>
+					<span>{{ userName }}，你好</span>
 				</a>
 				<nz-dropdown-menu #menu="nzDropdownMenu">
 					<ul nz-menu nzSelectable>
-						<li nz-menu-item (click)="changePwd()">
-							<i nz-icon nzType="setting" nzTheme="outline"></i
-							>账号设置
+						<li nz-menu-item (click)="changeUser()">
+							<i nz-icon nzType="setting" nzTheme="outline"> </i>
+							切换用户
 						</li>
 						<li nz-menu-item (click)="loginOut()">
-							<i nz-icon nzType="logout" nzTheme="outline"></i
-							>注销
+							<i nz-icon nzType="logout" nzTheme="outline"></i>
+							注销
 						</li>
 					</ul>
 				</nz-dropdown-menu>
