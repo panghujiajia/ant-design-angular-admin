@@ -5,15 +5,16 @@ import {
 	CanActivateChild,
 } from '@angular/router';
 import cloneDeep from 'lodash/cloneDeep';
-
-import { asyncRouterMap } from '../../configs/menuConfig';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { RouterService } from 'src/app/services/router.service';
+import { SaveMenuList } from 'src/app/stores/actions/bus.action';
 
 @Injectable()
 export class CanActiveGuide implements CanActivateChild {
 	constructor(
 		private router: Router,
+		private routerService: RouterService,
 		private store: Store<{ common: any }>
 	) {}
 	canActivateChild(
@@ -39,7 +40,14 @@ export class CanActiveGuide implements CanActivateChild {
 	 * @param url
 	 */
 	private CanRouteIn(url) {
-		const accessRouters = this.getAccessRouter();
+		// 从状态管理拿路由表
+		let accessRouters = this.getNgrxAccessRouter();
+		console.log('store', accessRouters);
+		// 没拿到就去接口拿
+		if (!accessRouters.length) {
+			accessRouters = this.getApiAccessRouter();
+			console.log('api', accessRouters);
+		}
 		let list = cloneDeep(accessRouters),
 			len = list.length,
 			i = 0,
@@ -59,33 +67,22 @@ export class CanActiveGuide implements CanActivateChild {
 		pathList.push('/');
 		return pathList.includes(url);
 	}
-	// 是否有该页面
-	private HavePage(url) {
-		// 全部路由表
-		const asyncRouters = cloneDeep(asyncRouterMap);
-		let len = asyncRouters.length,
-			i = 0,
-			pathList = [];
-		for (; i < len; i++) {
-			const item = asyncRouters[i];
-			if (item.children && item.children.length) {
-				pathList = [
-					...pathList,
-					...this.GetChildren(item.path, item.children),
-				];
-			} else {
-				pathList = [...pathList, `/${item.path}`];
-			}
-		}
-		// 排除掉根路径
-		pathList.push('/');
-		return pathList.includes(url);
-	}
 	// 从ngrx获取路由表
-	private getAccessRouter() {
+	private getNgrxAccessRouter() {
 		let accessRouters: any = [];
+		// 获取路由表
 		this.store.subscribe(state => {
 			accessRouters = state.common.menuList;
+		});
+		return accessRouters;
+	}
+	// 从接口拿路由表
+	private getApiAccessRouter() {
+		let accessRouters: any = [];
+		// 获取路由表
+		this.routerService.getRouters().subscribe(res => {
+			accessRouters = res;
+			this.store.dispatch(SaveMenuList({ menuList: res }));
 		});
 		return accessRouters;
 	}
@@ -100,7 +97,6 @@ export class CanActiveGuide implements CanActivateChild {
 		});
 		return pathList;
 	}
-
 	/**
 	 * 是否登录
 	 */
@@ -109,8 +105,11 @@ export class CanActiveGuide implements CanActivateChild {
 		return !!token;
 	}
 
-	getToken() {
-		return '12121';
-		throw new Error('Method not implemented.');
+	private getToken() {
+		let token: string = '';
+		this.store.subscribe(state => {
+			token = state.common.token;
+		});
+		return 'token';
 	}
 }

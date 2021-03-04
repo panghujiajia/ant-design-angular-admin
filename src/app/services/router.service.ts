@@ -13,6 +13,20 @@ export class RouterService {
 		private loginService: LoginService,
 		private store: Store<{ common: any }>
 	) {}
+	// 假定以下为用户的路由权限
+	private permissions = [
+		'welcome',
+		'menu',
+		'menu:list',
+		'menu:add',
+		'menu:edit',
+		'menu:delete',
+		'user',
+		'user:list',
+		'user:add',
+		'user:edit',
+		'user:delete',
+	];
 	// 获取完整菜单列表
 	getRouters() {
 		return new Observable(observe => {
@@ -62,20 +76,6 @@ export class RouterService {
 		this.store.subscribe(state => {
 			permissions = state.common.info.permissions;
 		});
-		// 假定以下为用户的路由权限
-		permissions = [
-			'welcome',
-			'menu',
-			'menu:list',
-			'menu:add',
-			'menu:edit',
-			'menu:delete',
-			'user',
-			'user:list',
-			'user:add',
-			'user:edit',
-			'user:delete',
-		];
-		return permissions;
+		return this.permissions;
 	}
 }
