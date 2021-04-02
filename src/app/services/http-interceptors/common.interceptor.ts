@@ -55,6 +55,8 @@ export class CommonInterceptor implements HttpInterceptor {
 				headers: req.headers.set('Authorization', token),
 			};
 		}
+		console.log(req);
+		
 		const request = req.clone(obj);
 		return next.handle(request).pipe(
 			tap(

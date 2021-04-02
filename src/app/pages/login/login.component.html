@@ -1,57 +1,10 @@
-<div id="login-wrap">
-	<div class="logoWrap">
-		<img src="./assets/logo.png" alt="logo" />
-		<h1>Company name</h1>
-	</div>
-	<form
-		nz-form
-		[formGroup]="validateForm"
-		class="login-form"
-		(ngSubmit)="submitForm()"
+<div class="login-wrap">
+	<button
+		nz-button
+		[nzType]="'primary'"
+		[nzLoading]="isSpinning"
+		(click)="submitForm()"
 	>
-		<nz-form-item>
-			<nz-form-control nzErrorTip="请输入用户名">
-				<nz-input-group nzPrefixIcon="user">
-					<input
-						type="text"
-						nz-input
-						formControlName="username"
-						placeholder="请输入用户名"
-					/>
-				</nz-input-group>
-			</nz-form-control>
-		</nz-form-item>
-		<nz-form-item>
-			<nz-form-control nzErrorTip="请输入密码">
-				<nz-input-group nzPrefixIcon="lock">
-					<input
-						type="password"
-						nz-input
-						formControlName="password"
-						placeholder="请输入密码"
-					/>
-				</nz-input-group>
-			</nz-form-control>
-		</nz-form-item>
-		<nz-form-item>
-			<nz-form-control>
-				<label nz-checkbox formControlName="remember">
-					<span appAppUnless="condition">记住账户</span>
-				</label>
-				<a class="login-form-forgot">忘记密码</a>
-				<button
-					nz-button
-					class="login-form-button"
-					[nzType]="'primary'"
-					[nzLoading]="isSpinning"
-				>
-					登 录
-				</button>
-			</nz-form-control>
-		</nz-form-item>
-	</form>
-	<div class="loginBottom">
-		<p>ant-design-angular-admin</p>
-		<p>Copyright 2020-2021 panghujiajia出品</p>
-	</div>
+		登 录
+	</button>
 </div>

@@ -13,37 +13,29 @@ export class RouterService {
 		private loginService: LoginService,
 		private store: Store<{ common: any }>
 	) {}
-	// 假定以下为用户的路由权限
-	private permissions = [
-		'welcome',
-		'menu',
-		'menu:list',
-		'menu:add',
-		'menu:edit',
-		'menu:delete',
-		'user',
-		'user:list',
-		'user:add',
-		'user:edit',
-		'user:delete',
-	];
 	// 获取完整菜单列表
 	getRouters() {
 		return new Observable(observe => {
 			const asyncRouters = cloneDeep(asyncRouterMap);
-			const accessedRouters = this.getAccessList(asyncRouters);
+			// 获取到的用户权限
+			const permissions = this.getPromission();
+			const accessedRouters = this.getAccessList(
+				asyncRouters,
+				permissions
+			);
 			observe.next(accessedRouters);
 			observe.complete();
 		});
 	}
 	// 获取用户权限菜单
-	getAccessList(routers) {
-		// 获取到的用户权限
-		const roles = this.getPromission();
+	getAccessList(routers, permissions) {
 		const newRouter = routers.map(item => {
-			if (this.hasPromission(item, roles)) {
+			if (this.hasPromission(item, permissions)) {
 				if (item.children && item.children.length) {
-					item.children = this.getAccessList(item.children);
+					item.children = this.getAccessList(
+						item.children,
+						permissions
+					);
 				}
 				// 如果给了模块权限，没给路由权限，则不返回
 				if (item.children && !item.children.length) {
@@ -73,9 +65,9 @@ export class RouterService {
 	// 获取用户权限
 	getPromission() {
 		let permissions = [];
-		this.store.subscribe(state => {
-			permissions = state.common.info.permissions;
+		this.loginService.getUserPermission().subscribe(res => {
+			permissions = res;
 		});
-		return this.permissions;
+		return permissions;
 	}
 }

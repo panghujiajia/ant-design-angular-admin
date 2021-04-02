@@ -18,33 +18,32 @@ export class LoginService {
 	 * 登录
 	 */
 	login(params): Observable<any> {
-		params = new HttpParams({ fromObject: params });
-		return this.http
-			.post(`${this.url}/login`, params, {
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					Auth: 'false', // 无需token
-				},
-			})
-			.pipe(
-				map((res: { success: boolean; message: string }) => {
-					if (res.success) {
-						return res;
-					} else {
-						return false;
-					}
-				})
-			);
+		return new Observable(observe => {
+			const token = 'token';
+			observe.next(token);
+			observe.complete();
+		});
 	}
 
-	info(): Observable<any> {
-		return this.http.get(`${this.url}/system/user/info`).pipe(
-			map((res: { success: boolean; message: string }) => {
-				if (res.success) {
-					return res;
-				}
-				return false;
-			})
-		);
+	// 获取用户权限
+	getUserPermission(): Observable<any> {
+		return new Observable(observe => {
+			// 假定以下为用户的路由权限
+			const permissions = [
+				'welcome',
+				'menu',
+				'menu:list',
+				'menu:add',
+				'menu:edit',
+				'menu:delete',
+				'user',
+				'user:list',
+				'user:add',
+				'user:edit',
+				'user:delete',
+			];
+			observe.next(permissions);
+			observe.complete();
+		});
 	}
 }
